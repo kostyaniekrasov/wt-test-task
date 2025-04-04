@@ -1,4 +1,4 @@
-import { Filters } from '@/components';
+import { Filters, UserList } from '@/components';
 import { fetchUsers } from '@/lib';
 
 const Home = async () => {
@@ -6,6 +6,7 @@ const Home = async () => {
   return (
     <main className="container mx-auto p-4">
       <Filters users={users} />
+      <UserList users={users} />
     </main>
   );
 };
