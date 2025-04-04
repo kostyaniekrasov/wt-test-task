@@ -1,21 +1,13 @@
-import Image from 'next/image';
+import { Filters } from '@/components';
+import { fetchUsers } from '@/lib';
 
-export default function Home() {
+const Home = async () => {
+  const users = await fetchUsers();
   return (
-    <div
-      className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center
-        gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20"
-    >
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-      </main>
-    </div>
+    <main className="container mx-auto p-4">
+      <Filters users={users} />
+    </main>
   );
-}
+};
+
+export default Home;
