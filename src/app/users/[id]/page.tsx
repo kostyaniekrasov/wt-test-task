@@ -1,6 +1,5 @@
 import { RecursiveRender } from '@/components';
 import fetchUserById from '@/lib/fetchUserById';
-import { JSONValue } from '@/types';
 import Link from 'next/link';
 
 const UserPage = async ({ params }: { params: { id: string } }) => {
@@ -20,7 +19,7 @@ const UserPage = async ({ params }: { params: { id: string } }) => {
       </Link>
       <div className="rounded-md border border-gray-300 p-4 shadow-sm">
         <h1 className="mb-4 text-2xl font-bold">User Info</h1>
-        <RecursiveRender data={user as unknown as JSONValue} />
+        {RecursiveRender(user)}
       </div>
     </section>
   );
