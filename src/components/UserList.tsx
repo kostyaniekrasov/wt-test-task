@@ -2,7 +2,7 @@ import { User } from '@/types';
 import Link from 'next/link';
 
 interface Props {
-  users: User[];
+  users: Pick<User, 'id' | 'name' | 'email' | 'company' | 'address'>[];
 }
 
 const UserList = ({ users }: Props) => {

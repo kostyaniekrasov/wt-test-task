@@ -4,7 +4,7 @@ import { User } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
-  users: User[];
+  users: Pick<User, 'company' | 'address'>[];
 }
 
 const Filters = ({ users }: Props) => {
