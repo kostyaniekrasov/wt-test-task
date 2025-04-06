@@ -1,7 +1,7 @@
 'use client';
 
 import makeAnimated from 'react-select/animated';
-import Select, { MultiValue } from 'react-select';
+import Select, { MultiValue, StylesConfig } from 'react-select';
 
 type OptionType = {
   value: string;
@@ -32,6 +32,75 @@ export default function MultiSelect({
     onChangeAction(selected ? selected.map((opt) => opt.value) : null);
   };
 
+  const customStyles: StylesConfig<OptionType, true> = {
+    control: (base, { isFocused }) => ({
+      ...base,
+      minHeight: 'calc(var(--spacing) * 14)',
+      width: '100%',
+      borderRadius: 'var(--radius-md)',
+      boxShadow: 'none',
+      borderWidth: '2px',
+      borderColor: isFocused
+        ? 'var(--color-blue-400)'
+        : 'var(--color-gray-300)',
+      transition: 'all 300ms',
+      ':hover': {
+        borderColor: 'var(--color-blue-400)',
+      },
+    }),
+    input: (base) => ({
+      ...base,
+      color: 'var(--color-gray-700)',
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: 'var(--color-gray-400)',
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--color-gray-700)',
+    }),
+    menu: (base) => ({
+      ...base,
+      marginTop: '0.5rem',
+      border: '1px solid var(--color-gray-200)',
+      borderRadius: '0.375rem',
+      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+    }),
+    option: (base, { isFocused, isSelected }) => ({
+      ...base,
+      padding: '0.5rem 0.75rem',
+      cursor: 'pointer',
+      backgroundColor: isFocused ? 'var(--color-blue-100)' : 'transparent',
+      foncoloreight: isSelected ? '600' : 'normal',
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: 'var(--color-blue-300)',
+      borderRadius: 'var(--radius-md)',
+      fontWeight: '500',
+      width: 'fit-content',
+      padding: '0.25rem 0.5rem',
+      marginRight: '0.5rem',
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: 'var(--color-gray-700)',
+    }),
+    multiValueRemove: (base) => ({
+      ...base,
+      color: 'var(--color-gray-700)',
+      borderRadius: 'var(--radius-md)',
+      transition: 'all 300ms',
+      cursor: 'pointer',
+      // padding: '0.25rem',
+      ':hover': {
+        backgroundColor: 'var(--color-red-200)',
+        color: 'var(--color-red-600)',
+      },
+    }),
+  };
+
   return (
     <Select<OptionType, true>
       isMulti
@@ -40,19 +109,8 @@ export default function MultiSelect({
       placeholder={placeholder}
       onChange={handleChange}
       defaultValue={defaultOptions}
+      styles={customStyles}
       className="w-full"
-      classNames={{
-        control: () =>
-          'w-full rounded-md border-2 border-gray-300 p-2 duration-300 hover:border-blue-400 focus:border-blue-400 focus:outline-none',
-        input: () => 'text-gray-700',
-        placeholder: () => 'text-gray-400',
-        singleValue: () => 'text-gray-700',
-        menu: () => 'mt-2 border border-gray-200 rounded-md shadow-md',
-        option: ({ isFocused, isSelected }) =>
-          `px-3 py-2 cursor-pointer ${isFocused ? 'bg-blue-100' : ''} ${
-            isSelected ? 'bg-blue-200 font-semibold' : ''
-          }`,
-      }}
     />
   );
 }

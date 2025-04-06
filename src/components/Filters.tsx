@@ -55,7 +55,7 @@ const Filters = ({ users }: Props) => {
 
   return (
     <form
-      className="mb-6 flex gap-4"
+      className="mb-6 flex flex-col gap-4 md:flex-row"
       onSubmit={(e) => e.preventDefault()}
     >
       <input
@@ -63,8 +63,9 @@ const Filters = ({ users }: Props) => {
         placeholder="Search by Name"
         defaultValue={searchParams.get('name') ?? ''}
         onChange={handleNameFilterChange}
-        className="w-full rounded-md border-2 border-gray-300 p-2 duration-300
-          hover:border-blue-400 focus:border-blue-400 focus:outline-none"
+        className="h-14 w-full rounded-md border-2 border-gray-300 p-2 duration-300
+          placeholder:text-gray-400 hover:border-blue-400 focus:border-blue-400
+          focus:outline-none"
       />
 
       <MultiSelect
