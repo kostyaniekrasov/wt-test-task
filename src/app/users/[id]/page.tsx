@@ -2,8 +2,9 @@ import { RecursiveRender } from '@/components';
 import fetchUserById from '@/lib/fetchUserById';
 import Link from 'next/link';
 
-const UserPage = async ({ params }: { params: { id: string } }) => {
-  const user = await fetchUserById(Number(params.id));
+const UserPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const resolvedParams = await params;
+  const user = await fetchUserById(Number(resolvedParams.id));
 
   if (!user) {
     return <div>User not found</div>;
@@ -13,7 +14,8 @@ const UserPage = async ({ params }: { params: { id: string } }) => {
     <section className="container mx-auto p-4">
       <Link
         href={'/'}
-        className="mb-4 inline-block text-blue-500 underline"
+        className="mb-4 flex h-14 w-fit items-center rounded-xl bg-blue-400 px-4 font-semibold
+          text-white duration-300 hover:bg-blue-500"
       >
         Back to Users
       </Link>

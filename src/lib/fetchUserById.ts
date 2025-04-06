@@ -1,4 +1,5 @@
 import { User } from '@/types';
+import UserSchema from './validation';
 
 const fetchUserById = async (id: number): Promise<User> => {
   const response = await fetch(
@@ -9,7 +10,13 @@ const fetchUserById = async (id: number): Promise<User> => {
     throw new Error('Failed to fetch user');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  const result = UserSchema.safeParse(data);
+  if (!result.success) {
+    throw new Error('Failed to validate user');
+  }
+  return result.data;
 };
 
 export default fetchUserById;
