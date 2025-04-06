@@ -1,7 +1,7 @@
 'use client';
 
-import makeAnimated from 'react-select/animated';
 import Select, { MultiValue, StylesConfig } from 'react-select';
+import makeAnimated from 'react-select/animated';
 
 type OptionType = {
   value: string;
@@ -72,7 +72,6 @@ export default function MultiSelect({
       padding: '0.5rem 0.75rem',
       cursor: 'pointer',
       backgroundColor: isFocused ? 'var(--color-blue-100)' : 'transparent',
-      foncoloreight: isSelected ? '600' : 'normal',
     }),
     multiValue: (base) => ({
       ...base,

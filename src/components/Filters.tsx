@@ -1,14 +1,16 @@
 'use client';
 
 import { User } from '@/types';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
 import debounce from 'lodash.debounce';
-import { MultiSelect } from './ui';
+import dynamic from 'next/dynamic';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo } from 'react';
 
 interface Props {
   users: Pick<User, 'company' | 'address'>[];
 }
+
+const MultiSelect = dynamic(() => import('./ui/MultiSelect'), { ssr: false });
 
 const Filters = ({ users }: Props) => {
   const router = useRouter();
@@ -42,7 +44,7 @@ const Filters = ({ users }: Props) => {
       debounce((value: string) => {
         updateFilter('name', value);
       }, 300),
-    [updateFilter],
+    [],
   );
 
   const handleNameFilterChange = useCallback(
@@ -52,6 +54,10 @@ const Filters = ({ users }: Props) => {
     },
     [debouncedNameFilter],
   );
+
+  useEffect(() => {
+    return () => debouncedNameFilter.cancel();
+  }, [debouncedNameFilter]);
 
   return (
     <form

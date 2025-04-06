@@ -1,10 +1,23 @@
 import { RecursiveRender } from '@/components';
 import fetchUserById from '@/lib/fetchUserById';
+import { User } from '@/types';
 import Link from 'next/link';
 
 const UserPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const resolvedParams = await params;
-  const user = await fetchUserById(Number(resolvedParams.id));
+  let user: User | null = null;
+
+  try {
+    user = await fetchUserById(Number(resolvedParams.id));
+  } catch (error) {
+    return (
+      <section className="container mx-auto p-4">
+        <p className="text-red-500">
+          Error fetching user: {(error as Error).message}
+        </p>
+      </section>
+    );
+  }
 
   if (!user) {
     return <div>User not found</div>;

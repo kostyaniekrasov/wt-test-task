@@ -1,28 +1,37 @@
 import { Filters, UserList } from '@/components';
-import { fetchUsers } from '@/lib';
+import { fetchUsers, filterUsers } from '@/lib';
+import { User } from '@/types';
 
-const Home = async ({ searchParams }: any) => {
-  const users = await fetchUsers();
-  const filtered = users.filter((u) => {
-    const name = searchParams.name?.toLowerCase() || '';
-    const companyParams = searchParams.company?.split(',') || [];
-    const cityParams = searchParams.city?.split(',') || [];
+interface Props {
+  readonly searchParams: Readonly<
+    Promise<{
+      [key: string]: string | string[] | undefined;
+    }>
+  >;
+}
 
-    const nameMatch = !name || u.name.toLowerCase().includes(name);
-    const companyMatch =
-      companyParams.length === 0 || companyParams.includes(u.company.name);
-    const cityMatch =
-      cityParams.length === 0 || cityParams.includes(u.address.city);
+export default async function Home({ searchParams }: Props) {
+  let users: User[] = [];
+  try {
+    users = await fetchUsers();
+  } catch (error) {
+    return (
+      <main className="container mx-auto p-4">
+        <p className="text-red-500">
+          Error fetching users: {(error as Error).message}
+        </p>
+      </main>
+    );
+  }
 
-    return nameMatch && companyMatch && cityMatch;
-  });
+  const resolvedSearchParams = await searchParams;
+
+  const filteredUsers = filterUsers(users, resolvedSearchParams);
 
   return (
     <main className="container mx-auto p-4">
       <Filters users={users} />
-      <UserList users={filtered} />
+      <UserList users={filteredUsers} />
     </main>
   );
-};
-
-export default Home;
+}

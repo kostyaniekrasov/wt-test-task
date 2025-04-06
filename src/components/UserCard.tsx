@@ -7,7 +7,6 @@ interface Props {
 }
 
 const UserCard = ({ user }: Props) => {
-  console.log('UserCard rendered', user.id);
   return (
     <Link
       key={user.id}
