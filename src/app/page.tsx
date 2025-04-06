@@ -4,13 +4,16 @@ import { fetchUsers } from '@/lib';
 const Home = async ({ searchParams }: any) => {
   const users = await fetchUsers();
   const filtered = users.filter((u) => {
-    const nameMatch =
-      !searchParams.name ||
-      u.name.toLowerCase().includes(searchParams.name.toLowerCase());
+    const name = searchParams.name?.toLowerCase() || '';
+    const companyParams = searchParams.company?.split(',') || [];
+    const cityParams = searchParams.city?.split(',') || [];
+
+    const nameMatch = !name || u.name.toLowerCase().includes(name);
     const companyMatch =
-      !searchParams.company || u.company.name === searchParams.company;
+      companyParams.length === 0 || companyParams.includes(u.company.name);
     const cityMatch =
-      !searchParams.city || u.address.city === searchParams.city;
+      cityParams.length === 0 || cityParams.includes(u.address.city);
+
     return nameMatch && companyMatch && cityMatch;
   });
 
