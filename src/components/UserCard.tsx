@@ -7,6 +7,7 @@ interface Props {
 }
 
 const UserCard = ({ user }: Props) => {
+  console.log('UserCard rendered', user.id);
   return (
     <Link
       key={user.id}
@@ -25,4 +26,6 @@ const UserCard = ({ user }: Props) => {
   );
 };
 
-export default React.memo(UserCard);
+export default React.memo(UserCard, (prevProps, nextProps) => {
+  return prevProps.user.id === nextProps.user.id;
+});

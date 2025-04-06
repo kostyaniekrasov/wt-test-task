@@ -2,24 +2,17 @@
 
 import { User } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
-import makeAnimated from 'react-select/animated';
-import Select from 'react-select';
+import { useCallback, useMemo } from 'react';
+import debounce from 'lodash.debounce';
+import { MultiSelect } from './ui';
 
 interface Props {
   users: Pick<User, 'company' | 'address'>[];
 }
 
-type OptionType = {
-  value: string;
-  label: string;
-};
-
 const Filters = ({ users }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const animatedComponents = makeAnimated();
 
   const companies = useMemo(
     () => Array.from(new Set(users.map((u) => u.company.name))),
@@ -44,6 +37,22 @@ const Filters = ({ users }: Props) => {
     router.push(`?${params.toString()}`);
   };
 
+  const debouncedNameFilter = useMemo(
+    () =>
+      debounce((value: string) => {
+        updateFilter('name', value);
+      }, 300),
+    [updateFilter],
+  );
+
+  const handleNameFilterChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      debouncedNameFilter(value);
+    },
+    [debouncedNameFilter],
+  );
+
   return (
     <form
       className="mb-6 flex gap-4"
@@ -53,45 +62,23 @@ const Filters = ({ users }: Props) => {
         type="text"
         placeholder="Search by Name"
         defaultValue={searchParams.get('name') ?? ''}
-        onChange={(e) => updateFilter('name', e.target.value)}
+        onChange={handleNameFilterChange}
         className="w-full rounded-md border-2 border-gray-300 p-2 duration-300
           hover:border-blue-400 focus:border-blue-400 focus:outline-none"
       />
-      <Select<OptionType, true>
-        isMulti
-        options={companies.map((name) => ({ value: name, label: name }))}
-        components={animatedComponents}
+
+      <MultiSelect
+        options={companies}
         placeholder="Filter by Company"
-        onChange={(selected) =>
-          updateFilter(
-            'company',
-            selected ? selected.map((opt) => opt.value) : null,
-          )
-        }
-        defaultValue={(searchParams.get('company') ?? '')
-          .split(',')
-          .filter(Boolean)
-          .map((c) => ({ value: c, label: c }))}
-        className="w-full"
+        defaultValue={(searchParams.get('company') ?? '').split(',')}
+        onChangeAction={(values) => updateFilter('company', values)}
       />
 
-      {/* City filter */}
-      <Select<OptionType, true>
-        isMulti
-        options={cities.map((name) => ({ value: name, label: name }))}
-        components={animatedComponents}
+      <MultiSelect
+        options={cities}
         placeholder="Filter by City"
-        onChange={(selected) =>
-          updateFilter(
-            'city',
-            selected ? selected.map((opt) => opt.value) : null,
-          )
-        }
-        defaultValue={(searchParams.get('city') ?? '')
-          .split(',')
-          .filter(Boolean)
-          .map((c) => ({ value: c, label: c }))}
-        className="w-full"
+        defaultValue={(searchParams.get('city') ?? '').split(',')}
+        onChangeAction={(values) => updateFilter('city', values)}
       />
     </form>
   );

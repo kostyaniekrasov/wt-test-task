@@ -13,7 +13,7 @@ const UserList = ({ users }: Props) => {
     <section className="flex flex-col gap-4">
       <h1 className="mb-2 text-2xl font-semibold">Users</h1>
 
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="wait">
         {users.map((user) => (
           <motion.div
             key={user.id}
@@ -25,6 +25,14 @@ const UserList = ({ users }: Props) => {
             <UserCard user={user} />
           </motion.div>
         ))}
+
+        {!users.length && (
+          <div className="w-full rounded-md bg-gray-300 p-4">
+            <p className="text-xl font-semibold text-gray-500">
+              User with filters not found
+            </p>
+          </div>
+        )}
       </AnimatePresence>
     </section>
   );
