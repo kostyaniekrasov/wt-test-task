@@ -10,7 +10,7 @@ interface Props {
   users: Pick<User, 'company' | 'address'>[];
 }
 
-const MultiSelect = dynamic(() => import('./ui/MultiSelect'), { ssr: false });
+const MultiSelect = dynamic(() => import('../ui/MultiSelect'), { ssr: false });
 
 const Filters = ({ users }: Props) => {
   const router = useRouter();
@@ -63,6 +63,7 @@ const Filters = ({ users }: Props) => {
     <form
       className="mb-6 flex flex-col gap-4 md:flex-row"
       onSubmit={(e) => e.preventDefault()}
+      data-testid="filters-form"
     >
       <input
         type="text"
@@ -72,21 +73,32 @@ const Filters = ({ users }: Props) => {
         className="h-14 w-full rounded-md border-2 border-gray-300 p-2 duration-300
           placeholder:text-gray-400 hover:border-blue-400 focus:border-blue-400
           focus:outline-none"
+        data-testid="name-filter-input"
       />
 
-      <MultiSelect
-        options={companies}
-        placeholder="Filter by Company"
-        defaultValue={(searchParams.get('company') ?? '').split(',')}
-        onChangeAction={(values) => updateFilter('company', values)}
-      />
+      <div
+        data-testid="company-filter-wrapper"
+        className="w-full"
+      >
+        <MultiSelect
+          options={companies}
+          placeholder="Filter by Company"
+          defaultValue={(searchParams.get('company') ?? '').split(',')}
+          onChangeAction={(values) => updateFilter('company', values)}
+        />
+      </div>
 
-      <MultiSelect
-        options={cities}
-        placeholder="Filter by City"
-        defaultValue={(searchParams.get('city') ?? '').split(',')}
-        onChangeAction={(values) => updateFilter('city', values)}
-      />
+      <div
+        data-testid="city-filter-wrapper"
+        className="w-full"
+      >
+        <MultiSelect
+          options={cities}
+          placeholder="Filter by City"
+          defaultValue={(searchParams.get('city') ?? '').split(',')}
+          onChangeAction={(values) => updateFilter('city', values)}
+        />
+      </div>
     </form>
   );
 };

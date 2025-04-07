@@ -16,7 +16,10 @@ export default async function Home({ searchParams }: Props) {
     users = await fetchUsers();
   } catch (error) {
     return (
-      <main className="container mx-auto p-4">
+      <main
+        className="container mx-auto p-4"
+        data-testid="error-message"
+      >
         <p className="text-red-500">
           Error fetching users: {(error as Error).message}
         </p>
@@ -29,7 +32,10 @@ export default async function Home({ searchParams }: Props) {
   const filteredUsers = filterUsers(users, resolvedSearchParams);
 
   return (
-    <main className="container mx-auto p-4">
+    <main
+      className="container mx-auto p-4"
+      data-testid="home-page"
+    >
       <Filters users={users} />
       <UserList users={filteredUsers} />
     </main>

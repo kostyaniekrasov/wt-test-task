@@ -92,7 +92,6 @@ export default function MultiSelect({
       borderRadius: 'var(--radius-md)',
       transition: 'all 300ms',
       cursor: 'pointer',
-      // padding: '0.25rem',
       ':hover': {
         backgroundColor: 'var(--color-red-200)',
         color: 'var(--color-red-600)',
@@ -110,6 +109,7 @@ export default function MultiSelect({
       defaultValue={defaultOptions}
       styles={customStyles}
       className="w-full"
+      instanceId="multi-select"
     />
   );
 }
