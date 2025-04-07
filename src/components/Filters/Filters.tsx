@@ -3,7 +3,7 @@
 import debounce from 'lodash.debounce';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useRef } from 'react';
 
 interface Props {
   companies: string[];
@@ -13,6 +13,9 @@ interface Props {
 const MultiSelect = dynamic(() => import('../ui/MultiSelect'), { ssr: false });
 
 const Filters = ({ companies, cities }: Props) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const companySelectRef = useRef<any>(null);
+  const citySelectRef = useRef<any>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -40,11 +43,27 @@ const Filters = ({ companies, cities }: Props) => {
 
   const handleNameFilterChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
+      const value = e.target.value.replace(/\s+/g, ' ').trim();
       debouncedNameFilter(value);
     },
     [debouncedNameFilter],
   );
+
+  const handleReset = useCallback((e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+    if (companySelectRef.current) {
+      companySelectRef.current.clearValue();
+    }
+    if (citySelectRef.current) {
+      citySelectRef.current.clearValue();
+    }
+    updateFilter('name', null);
+    updateFilter('company', null);
+    updateFilter('city', null);
+  }, []);
 
   useEffect(() => {
     return () => debouncedNameFilter.cancel();
@@ -54,8 +73,9 @@ const Filters = ({ companies, cities }: Props) => {
     <header>
       <form
         className="mb-6 flex flex-col gap-4 md:flex-row"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleReset}
         data-testid="filters-form"
+        ref={formRef}
       >
         <input
           type="text"
@@ -77,6 +97,7 @@ const Filters = ({ companies, cities }: Props) => {
             placeholder="Filter by Company"
             defaultValue={(searchParams.get('company') ?? '').split(',')}
             onChangeAction={(values) => updateFilter('company', values)}
+            ref={companySelectRef}
           />
         </div>
 
@@ -89,8 +110,18 @@ const Filters = ({ companies, cities }: Props) => {
             placeholder="Filter by City"
             defaultValue={(searchParams.get('city') ?? '').split(',')}
             onChangeAction={(values) => updateFilter('city', values)}
+            ref={citySelectRef}
           />
         </div>
+
+        <button
+          type="submit"
+          className="flex h-14 w-fit cursor-pointer items-center rounded-xl bg-red-400 px-4 text-xl
+            font-semibold text-white duration-300 hover:bg-red-800"
+          data-testid="reset-button"
+        >
+          Reset
+        </button>
       </form>
     </header>
   );
