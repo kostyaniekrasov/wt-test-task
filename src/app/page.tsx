@@ -1,5 +1,5 @@
 import { Filters, UserList } from '@/components';
-import { fetchUsers, filterUsers } from '@/lib';
+import { fetchUsers, filterUsers, getCities, getCompanies } from '@/lib';
 import { User } from '@/types';
 
 interface Props {
@@ -27,8 +27,9 @@ export default async function Home({ searchParams }: Props) {
     );
   }
 
+  const companies = getCompanies(users);
+  const cities = getCities(users);
   const resolvedSearchParams = await searchParams;
-
   const filteredUsers = filterUsers(users, resolvedSearchParams);
 
   return (
@@ -36,7 +37,10 @@ export default async function Home({ searchParams }: Props) {
       className="container mx-auto p-4"
       data-testid="home-page"
     >
-      <Filters users={users} />
+      <Filters
+        companies={companies}
+        cities={cities}
+      />
       <UserList users={filteredUsers} />
     </main>
   );

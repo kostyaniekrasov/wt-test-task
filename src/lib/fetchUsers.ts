@@ -1,7 +1,8 @@
-import { User } from '@/types';
 import { UserSchema } from '@/lib';
+import { User } from '@/types';
+import { cache } from 'react';
 
-const fetchUsers = async (): Promise<User[]> => {
+const fetchUsersCached = cache(async (): Promise<User[]> => {
   const response = await fetch('https://jsonplaceholder.typicode.com/users');
 
   if (!response.ok) {
@@ -16,6 +17,6 @@ const fetchUsers = async (): Promise<User[]> => {
   }
 
   return result.data;
-};
+});
 
-export default fetchUsers;
+export default fetchUsersCached;

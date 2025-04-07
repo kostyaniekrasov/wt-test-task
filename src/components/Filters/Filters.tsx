@@ -1,29 +1,20 @@
 'use client';
 
-import { User } from '@/types';
 import debounce from 'lodash.debounce';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo } from 'react';
 
 interface Props {
-  users: Pick<User, 'company' | 'address'>[];
+  companies: string[];
+  cities: string[];
 }
 
 const MultiSelect = dynamic(() => import('../ui/MultiSelect'), { ssr: false });
 
-const Filters = ({ users }: Props) => {
+const Filters = ({ companies, cities }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const companies = useMemo(
-    () => Array.from(new Set(users.map((u) => u.company.name))),
-    [users],
-  );
-  const cities = useMemo(
-    () => Array.from(new Set(users.map((u) => u.address.city))),
-    [users],
-  );
 
   const updateFilter = (filter: string, value: string | string[] | null) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -60,46 +51,48 @@ const Filters = ({ users }: Props) => {
   }, [debouncedNameFilter]);
 
   return (
-    <form
-      className="mb-6 flex flex-col gap-4 md:flex-row"
-      onSubmit={(e) => e.preventDefault()}
-      data-testid="filters-form"
-    >
-      <input
-        type="text"
-        placeholder="Search by Name"
-        defaultValue={searchParams.get('name') ?? ''}
-        onChange={handleNameFilterChange}
-        className="h-14 w-full rounded-md border-2 border-gray-300 p-2 duration-300
-          placeholder:text-gray-400 hover:border-blue-400 focus:border-blue-400
-          focus:outline-none"
-        data-testid="name-filter-input"
-      />
-
-      <div
-        data-testid="company-filter-wrapper"
-        className="w-full"
+    <header>
+      <form
+        className="mb-6 flex flex-col gap-4 md:flex-row"
+        onSubmit={(e) => e.preventDefault()}
+        data-testid="filters-form"
       >
-        <MultiSelect
-          options={companies}
-          placeholder="Filter by Company"
-          defaultValue={(searchParams.get('company') ?? '').split(',')}
-          onChangeAction={(values) => updateFilter('company', values)}
+        <input
+          type="text"
+          placeholder="Search by Name"
+          defaultValue={searchParams.get('name') ?? ''}
+          onChange={handleNameFilterChange}
+          className="h-14 w-full rounded-md border-2 border-gray-300 p-2 duration-300
+            placeholder:text-gray-400 hover:border-blue-400 focus:border-blue-400
+            focus:outline-none"
+          data-testid="name-filter-input"
         />
-      </div>
 
-      <div
-        data-testid="city-filter-wrapper"
-        className="w-full"
-      >
-        <MultiSelect
-          options={cities}
-          placeholder="Filter by City"
-          defaultValue={(searchParams.get('city') ?? '').split(',')}
-          onChangeAction={(values) => updateFilter('city', values)}
-        />
-      </div>
-    </form>
+        <div
+          data-testid="company-filter-wrapper"
+          className="w-full"
+        >
+          <MultiSelect
+            options={companies}
+            placeholder="Filter by Company"
+            defaultValue={(searchParams.get('company') ?? '').split(',')}
+            onChangeAction={(values) => updateFilter('company', values)}
+          />
+        </div>
+
+        <div
+          data-testid="city-filter-wrapper"
+          className="w-full"
+        >
+          <MultiSelect
+            options={cities}
+            placeholder="Filter by City"
+            defaultValue={(searchParams.get('city') ?? '').split(',')}
+            onChangeAction={(values) => updateFilter('city', values)}
+          />
+        </div>
+      </form>
+    </header>
   );
 };
 
